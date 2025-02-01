@@ -20,15 +20,5 @@ services:
     ports:
       - 33306:3306
     container_name: mysql
-  phpmyadmin:
-    image: phpmyadmin
-    ports:
-      - 8100:80
-    environment:
-      - PMA_HOST=mysql
-      - PMA_ARBITRARY=1
-    depends_on:
-      - mysql
-    container_name: phpmyadmin
 
 
