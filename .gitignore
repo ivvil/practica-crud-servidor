@@ -3,3 +3,5 @@
 ./app/composer.lock
 .idea
 /docker/mysql/
+/.direnv/
+/app/vendor
