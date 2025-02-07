@@ -1,24 +1,28 @@
 FROM php:8.3-apache
+
+# Set noninteractive mode to avoid prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update
-RUN apt -y install vim
 
-RUN echo "<Directory /var/www/html>" >> /etc/apache2/apache2.conf
-RUN echo "Options +Indexes"  >> /etc/apache2/apache2.conf
-RUN echo "</Directory>"  >> /etc/apache2/apache2.conf
+# Update and install necessary packages
+RUN apt update && apt -y install emacs-nox
 
- # Instalar Xdebug
- RUN pecl install xdebug \
-     && docker-php-ext-enable xdebug
+# Enable Apache modules
+RUN a2enmod rewrite
 
+# Configure Apache to allow .htaccess overrides
+RUN echo '<Directory "/var/www/html">' > /etc/apache2/sites-available/000-default.conf \
+    && echo "    AllowOverride All" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "</Directory>" >> /etc/apache2/sites-available/000-default.conf
 
- # Configuración de Xdebug
- RUN echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" >> /usr/local/etc/php/conf.d/xdebug.ini \
-     && echo "xdebug.remote_enable=true" >> /usr/local/etc/php/conf.d/xdebug.ini
+# Install Xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
 
-RUN echo "ErrorLog ${APACHE_LOG_DIR}/error.log" >> /etc/apache2/apache2.conf
+# Configure Xdebug
+RUN echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_enable=true" >> /usr/local/etc/php/conf.d/xdebug.ini
+
+# Ensure Apache logs are created
 RUN mkdir -p /var/log/apache2 && touch /var/log/apache2/error.log
 
-RUN docker-php-ext-install mysqli
-RUN docker-php-ext-enable mysqli
-
+# Install and enable MySQL extension
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli

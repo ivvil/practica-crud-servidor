@@ -1,0 +1,50 @@
+{# -*- engine:django -*- #}
+
+{% extends "layouts/layout.html.twig" %}
+
+{% block content %}
+
+	<main role="tablist" class="centered">
+		<div class="tetas_sabrosas">
+			<button hx-get="/login" role="tab" aria-controls="tab-content" hx-target="body">
+				<h2><strong>01</strong> Login</h2>
+				<hr>
+			</button>
+			{% if action == "Login" %}
+				<div id="tab-content" role="tabpanel" class="tab-content">
+					<form method="post" action="index.php">
+						<label for="user">USR:</label>
+						<input type="text" name="user">
+						<br>
+						<label for="password">PSSWD:</label>
+						<input type="password" name="password">
+						<br>
+						<input type="submit" value="LOGIN">
+					</form>
+				</div>
+			{% endif %}
+			<br>
+			<button hx-get="/register" role="tab" aria-controls="tab-content" hx-target="body">
+				<h2><strong>02</strong> Register</h2>
+				<hr>
+			</button>
+			{% if action == "Register" %}
+				<div id="tab-content" role="tabpanel" class="tab-content">
+					<form method="post" action="index.php">
+						<label for="user">USR:</label>
+						<input type="text" name="user">
+						<br>
+						<label for="password">PSSWD:</label>
+						<input type="password" name="password">
+						<br>
+						<label for="re-password">REPEAT PSSWD:</label>
+						<input type="password" name="re-password">
+						<br>
+						<input type="submit" value="REGISTER">
+					</form>
+				</div>
+			{% endif %}
+		</div>
+	</main>
+
+{% endblock %}
