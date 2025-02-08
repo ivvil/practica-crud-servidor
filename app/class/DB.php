@@ -8,15 +8,21 @@ use mysqli_stmt;
 
 class DB
 {
-
+    private static $instance = null;
     public $con;
 
-    public function __construct()
+    private function __construct()
     {
-        $host = $_ENV['HOST'];
+        $host="mysql";
+        $user="alumno";
+        $pass="alumno";
+        $db="tienda";
+        /* $ROOT_PASSWORD="root_password"   */          ;
+
+        /* $host = $_ENV['HOST'];
         $user = $_ENV['DB_USER'];
         $pass = $_ENV['PASSWORD'];
-        $db = $_ENV['DATABASE'];
+        $db = $_ENV['DATABASE']; */
 
 
         try {
@@ -27,6 +33,16 @@ class DB
         } catch (mysqli_sql_exception $e) {
             throw new DBError("Database error: " . $e->getMessage());
         }
+    }
+
+    public static function getInstance(): DB
+    {
+        if (self::$instance === null)
+        {
+            self::$instance = new DB();
+        }
+
+        return self::$instance;
     }
 
     /*
@@ -43,33 +59,22 @@ class DB
     {
         $tablas = [];
 
-        $stmt = $this->con->prepare('SHOW TABLES');
-        if (!$stmt) {
+        $res = $this->exec_stmt('SHOW TABLES', "", []);
+        if (!$res) {
             throw new DBError('Prepare failed: ' . $this->con->error);   
         }
-
-        if (!$stmt->execute()) {
-            throw new DBError('Execute failed: ' . $stmt->error);
-        }
-
-        
-        $stmt->bind_result($tableName);
-
-        while ($stmt->fetch()) {
-            $tablas[] = $tableName;
-        }
-
-        $stmt->close();
 
         return $tablas;
     }
 
     // Retorna un array con las filas de una tabla
-    public function get_filas(string $sentencia): array
+    public function get_filas(string $tabla): array
     {
         $filas = [];
-        if (!$this->con) {
-            return false;
+        $res = $this->exec_stmt("SELECT * FROM ?", "s", [ $tabla ]);
+        // TETAS
+        if (!$res) {
+            return [];
         }
 
         return $filas;
@@ -105,49 +110,67 @@ class DB
     //Retorna un bool = true si ha ido bien o un mensaje si ha ocurrdio algún problema, como que el usuario ya existiese
     public function registrar_usuario(string $nombre, string $pass): void
     {
-        $stmt = $this->con->prepare('INSERT INTO usuarios (nombre, password) VALUES (?, ?)');
-        if (!$stmt) {
-            throw new DBError('Prepare failed: ' . $this->con->error);
-        }
-
-        $stmt->bind_param('s', $nombre, 's', password_hash($pass, PASSWORD_DEFAULT));
-
-        if (!$stmt->execute()) {
-            throw new DBError('Execute failed: ' . $stmt->error);
+        $pass_hash = password_hash($pass, PASSWORD_DEFAULT);
+        $res = $this->exec_stmt('INSERT INTO usuarios (nombre, password) VALUES (?, ?)', "ss", [$nombre, $pass_hash]);
+        if (!$res[0]) {
+            throw new DBError('Insert Failed');
         }
     }
 
     public function existe_usuario(string $nombre): bool
     {
-        $stmt = $this->con->prepare("SELECT * FROM usuarios WHERE nombre = ?");
-        if (!$stmt) {
-            throw new DBError("Prepare failed: " . $this->con->error);
+        $res = $this->exec_stmt("SELECT * FROM usuarios WHERE nombre = ?", "s", [$nombre]);
+        if (empty($res)) {
+            return false;
         }
 
-        $stmt->bind_param('s', $nombre);
-
-        if (!$stmt->execute()) {
-            throw new DBError('Execute failed: ' . $stmt->error);
-        }
-
-        $stmt->store_result();
-
-        return $stmt->num_rows > 0;
+        return count($res) === 1;
     }
 
     public function comprobar_contrasegna(string $nombre, string $pass): bool
     {
-        $sql = "SELECT password FROM usuarios WHERE nombre = ?";
-        $stmt = $this->ejecuta_sentencia($sql, [$nombre]);
-        $stmt->store_result();
-
-        if ($stmt->num_rows === 0) {
-            throw new DBError("User not found.");
+        $res = $this->exec_stmt("SELECT password FROM usuarios WHERE nombre = ?", "s", [$nombre]);
+        if (!empty($res)) {
+            if (count($res) > 1){
+                throw new DBError("QUE COÑO MAS DE 1 USUARIO");
+            }
+            $hashedPass = $res[0]["password"];
+            return password_verify($pass, $hashedPass);
         }
+        
+        return false;
 
-        $stmt->bind_result($hashedPass);
-        $stmt->fetch();
-
-        return password_verify($pass, $hashedPass);
     }
+
+    private function exec_stmt(string $sql, string $param_types, array $params): array
+{
+    if (strlen($param_types) !== count($params)) {
+        throw new DBError("Número de parámetros incorrecto.");
+    }
+
+    $stmt = $this->con->prepare($sql);
+    if (!$stmt) {
+        throw new DBError("Error preparando la consulta: " . $this->con->error);
+    }
+
+    // Vincular parámetros correctamente
+    if (strlen($param_types) > 0){
+        $stmt->bind_param($param_types, ...$params);
+    }
+    
+    if (!$stmt->execute()) {
+        throw new DBError('Error al ejecutar: ' . $stmt->error);
+    }
+
+    $result = $stmt->get_result();
+
+    // Si la consulta es de tipo SELECT, obtener los datos
+    if ($result) {
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    // Si no hay resultado (ejemplo: INSERT, UPDATE, DELETE), devolver éxito
+    return [true];
+}
+
 }

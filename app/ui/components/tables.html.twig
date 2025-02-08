@@ -1,5 +1,7 @@
 {# -*- engine:django -*- #}
 
+{% extends "layouts/layout.html.twig" %}
+
 {% block content %}
 
 	<main>
@@ -13,6 +15,7 @@
 				{% for table in tables %}
 					<tr>
 						<td>{{table}}</td>
+						<td><a href="/tables/{{table}}">Acceder -></a></td>
 					</tr>
 				{% endfor %}
 			</tbody>

@@ -12,14 +12,16 @@
 			</button>
 			{% if action == "Login" %}
 				<div id="tab-content" role="tabpanel" class="tab-content">
-					<form method="post" action="index.php">
+					<form method="post" action="/login">
 						<label for="user">USR:</label>
-						<input type="text" name="user">
+						<input type="text" name="user">					
 						<br>
 						<label for="password">PSSWD:</label>
 						<input type="password" name="password">
 						<br>
-						<input type="submit" value="LOGIN">
+						<span class="error">{{ eror.login }}</span>
+						<br>
+						<input type="submit" name="submit" value="Login">
 					</form>
 				</div>
 			{% endif %}
@@ -30,17 +32,19 @@
 			</button>
 			{% if action == "Register" %}
 				<div id="tab-content" role="tabpanel" class="tab-content">
-					<form method="post" action="index.php">
+					<form method="post" action="/register">
 						<label for="user">USR:</label>
 						<input type="text" name="user">
+						<span class="error">{{ error.user }}</span>
 						<br>
 						<label for="password">PSSWD:</label>
 						<input type="password" name="password">
 						<br>
 						<label for="re-password">REPEAT PSSWD:</label>
 						<input type="password" name="re-password">
+						<span class="error">{{ error.passwd }}</span>	
 						<br>
-						<input type="submit" value="REGISTER">
+						<input type="submit" name="submit" value="Register">
 					</form>
 				</div>
 			{% endif %}

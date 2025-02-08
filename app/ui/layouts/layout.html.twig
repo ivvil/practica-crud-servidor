@@ -15,6 +15,11 @@
 	<body hx-boost="true">
 		<header>
 			<h1>CRUD PHP</h1>
+			{% if user.logged %}
+				<form method="post" action="/login">
+					<input type="submit" value="Logout" name="submit" />
+				</form>
+			{% endif %}
 		</header>
 		
 		{% block content %}{% endblock %}
