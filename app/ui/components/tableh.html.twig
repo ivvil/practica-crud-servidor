@@ -1,0 +1,18 @@
+{# -*- engine:django -*- #}
+
+{% macro th(name) %}
+	<th>
+		<strong>{{name}}</strong>
+		<hr />		
+	</th>
+{% endmacro %}
+
+{% macro thead(columns) %}
+	<thead>
+		<tr>
+			{% for column in columns %}
+				{{ th(column.name) }}
+			{% endfor %}
+		</tr>
+	</thead>
+{% endmacro %}

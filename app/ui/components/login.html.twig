@@ -6,7 +6,7 @@
 
 	<main role="tablist" class="centered">
 		<div class="tetas_sabrosas">
-			<button hx-get="/login" role="tab" aria-controls="tab-content" hx-target="body">
+			<button hx-get="/login" role="tab" aria-controls="tab-content" hx-target="body" hx-push-url="true">
 				<h2><strong>01</strong> Login</h2>
 				<hr>
 			</button>
@@ -24,7 +24,7 @@
 				</div>
 			{% endif %}
 			<br>
-			<button hx-get="/register" role="tab" aria-controls="tab-content" hx-target="body">
+			<button hx-get="/register" role="tab" aria-controls="tab-content" hx-target="body" hx-push-url="true">
 				<h2><strong>02</strong> Register</h2>
 				<hr>
 			</button>

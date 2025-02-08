@@ -1,0 +1,22 @@
+{# -*- engine:django -*- #}
+
+{% block content %}
+
+	<main>
+		<table>
+			<thead>
+				<tr>
+					<th scope="col">Nombre</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for table in tables %}
+					<tr>
+						<td>{{table}}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</main>
+
+{% endblock %}
