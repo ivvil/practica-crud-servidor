@@ -13,11 +13,11 @@ class DB
 
     private function __construct()
     {
-        $host="mysql";
-        $user="alumno";
-        $pass="alumno";
-        $db="tienda";
-        /* $ROOT_PASSWORD="root_password"   */          ;
+        $host = "mysql";
+        $user = "alumno";
+        $pass = "alumno";
+        $db = "tienda";
+            /* $ROOT_PASSWORD="root_password"   */;
 
         /* $host = $_ENV['HOST'];
         $user = $_ENV['DB_USER'];
@@ -37,8 +37,7 @@ class DB
 
     public static function getInstance(): DB
     {
-        if (self::$instance === null)
-        {
+        if (self::$instance === null) {
             self::$instance = new DB();
         }
 
@@ -61,7 +60,12 @@ class DB
 
         $res = $this->exec_stmt('SHOW TABLES', "", []);
         if (!$res) {
-            throw new DBError('Prepare failed: ' . $this->con->error);   
+            throw new DBError('Prepare failed: ' . $this->con->error);
+        }
+
+        foreach ($res as $tabla)
+        {
+            $tablas = array_merge($tablas, array_values($tabla));
         }
 
         return $tablas;
@@ -71,7 +75,7 @@ class DB
     public function get_filas(string $tabla): array
     {
         $filas = [];
-        $res = $this->exec_stmt("SELECT * FROM ?", "s", [ $tabla ]);
+        $res = $this->exec_stmt("SELECT * FROM ?", "s", [$tabla]);
         // TETAS
         if (!$res) {
             return [];
@@ -131,46 +135,44 @@ class DB
     {
         $res = $this->exec_stmt("SELECT password FROM usuarios WHERE nombre = ?", "s", [$nombre]);
         if (!empty($res)) {
-            if (count($res) > 1){
+            if (count($res) > 1) {
                 throw new DBError("QUE COÑO MAS DE 1 USUARIO");
             }
             $hashedPass = $res[0]["password"];
             return password_verify($pass, $hashedPass);
         }
-        
-        return false;
 
+        return false;
     }
 
     private function exec_stmt(string $sql, string $param_types, array $params): array
-{
-    if (strlen($param_types) !== count($params)) {
-        throw new DBError("Número de parámetros incorrecto.");
+    {
+        if (strlen($param_types) !== count($params)) {
+            throw new DBError("Número de parámetros incorrecto.");
+        }
+
+        $stmt = $this->con->prepare($sql);
+        if (!$stmt) {
+            throw new DBError("Error preparando la consulta: " . $this->con->error);
+        }
+
+        // Vincular parámetros correctamente
+        if (strlen($param_types) > 0) {
+            $stmt->bind_param($param_types, ...$params);
+        }
+
+        if (!$stmt->execute()) {
+            throw new DBError('Error al ejecutar: ' . $stmt->error);
+        }
+
+        $result = $stmt->get_result();
+
+        // Si la consulta es de tipo SELECT, obtener los datos
+        if ($result) {
+            return $result->fetch_all(MYSQLI_ASSOC);
+        }
+
+        // Si no hay resultado (ejemplo: INSERT, UPDATE, DELETE), devolver éxito
+        return [true];
     }
-
-    $stmt = $this->con->prepare($sql);
-    if (!$stmt) {
-        throw new DBError("Error preparando la consulta: " . $this->con->error);
-    }
-
-    // Vincular parámetros correctamente
-    if (strlen($param_types) > 0){
-        $stmt->bind_param($param_types, ...$params);
-    }
-    
-    if (!$stmt->execute()) {
-        throw new DBError('Error al ejecutar: ' . $stmt->error);
-    }
-
-    $result = $stmt->get_result();
-
-    // Si la consulta es de tipo SELECT, obtener los datos
-    if ($result) {
-        return $result->fetch_all(MYSQLI_ASSOC);
-    }
-
-    // Si no hay resultado (ejemplo: INSERT, UPDATE, DELETE), devolver éxito
-    return [true];
-}
-
 }

@@ -9,6 +9,25 @@ $tmplt = Templates::getInstance(__DIR__ . '/ui');
 $req = $_SERVER["REQUEST_URI"];
 $view_dir = "/views/";
 
+$router = new Router();
+
+$router->addRoutes([
+    [
+        'method' => 'POST',
+        'path' => '/',
+        'handler' => function () {
+            require __DIR__ . $view_dir . "login.php";
+        },
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/',
+        'handler' => function () {
+            require __DIR__ . $view_dir . "login.php";
+        },
+    ]
+]);
+
 switch ($req) {
 	case "":
 	case "/":
