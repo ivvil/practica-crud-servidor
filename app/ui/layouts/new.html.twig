@@ -1,0 +1,18 @@
+{# -*- engine:django -*- #}
+
+{% extends "layouts/layout.html.twig" %}
+
+{% block content %}
+	<h2>Añadiendo: {{tablename}}</h2>
+	<hr />
+
+	<main>
+		<form method="post">
+		{% for field in table %}
+			<label for="{field.name}">{field.name}</label>
+			<input type="{field.type}" name="{field}">
+		{% endfor %}
+		<input type="submit">
+		</form>
+	</main>
+{% endblock %}

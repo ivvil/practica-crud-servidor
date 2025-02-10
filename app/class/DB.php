@@ -48,9 +48,24 @@ class DB
      * Este método tendría que investigar en el diccionario de datos
      * Devolverá qué campos de esta tabla son claves foráneas
      * */
-    public function get_foraneas(string $tabla): array
+    public function get_foraneas(string $tabla): array // Ni idea si esto va a funcionar
     {
-        return [];
+        $res = $this->exec_stmt("
+        SELECT
+            CONSTRAINT_NAME,
+            TABLE_NAME,
+            COLUMN_NAME,
+            REFERENCED_TABLE_NAME,
+            REFERENCED_COLUMN_NAME
+        FROM
+            INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+        WHERE
+            REFERENCED_TABLE_SCHEMA = ? AND
+            TABLE_NAME = ? AND
+            REFERENCED_TABLE_NAME IS NOT NULL;
+       ", 'ss', ["tienda", $tabla]);
+
+        return $res;
     }
 
 
