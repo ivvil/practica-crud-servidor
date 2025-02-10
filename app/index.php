@@ -6,39 +6,36 @@ require_once "vendor/autoload.php";
 
 $tmplt = Templates::getInstance(__DIR__ . '/ui');
 
-$req = $_SERVER["REQUEST_URI"];
-$view_dir = "/views/";
-
 $router = new Router();
 
 $router->addRoutes([
     [
-        'method' => 'POST',
-        'path' => '/',
+        'method' => '',
+        'path' => [
+            '/',
+            '/login',
+            '/register',
+        ],
         'handler' => function () {
-            require __DIR__ . $view_dir . "login.php";
+            require __DIR__ . '/views/login.php';
         },
     ],
     [
-        'method' => 'POST',
-        'path' => '/',
+        'method' => '',
+        'path' => '/tables',
         'handler' => function () {
-            require __DIR__ . $view_dir . "login.php";
+            require __DIR__ . '/views/tables.php';
         },
-    ]
+    ],
+    [
+        'method' => '',
+        'path' => '/table/{tablename}',
+        'handler' => function ($params) {
+            $tablename = $params['tablename'] ?? 'default';
+            require __DIR__ . '/views/table.php';
+        },
+    ],
 ]);
 
-switch ($req) {
-	case "":
-	case "/":
-	case "/login":
-	case "/register":		
-		require __DIR__ . $view_dir . "login.php";
-		break;
-	case "/tables":
-		require __DIR__ . $view_dir . "tables.php";
-		break;
-	default:
-		http_response_code(404);
-		break;
-}
+$router->resolve();
+
