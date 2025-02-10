@@ -29,9 +29,13 @@ $router->addRoutes([
     ],
     [
         'method' => '',
-        'path' => '/table/{tablename}',
+        'path' => [
+            '/table/{tablename}',
+            '/table/{tablename}/{row}'
+        ],
         'handler' => function ($params) {
             $tablename = $params['tablename'] ?? 'default';
+            $row = $params['row'] ?? 'default';
             require __DIR__ . '/views/table.php';
         },
     ],

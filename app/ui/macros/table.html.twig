@@ -1,20 +1,34 @@
 {# -*- engine:django -*- #}
 
 {% macro th(name) %}
-  <th>
-	<strong>{{name}}</strong>
-	<hr />		
-  </th>
+	<th>
+		<strong>{{name}}</strong>
+		<hr />		
+	</th>
 {% endmacro %}
 
 {% macro thead(columns) %}
-  <thead>
-	  <tr>
-		  {% for column in columns %}
-			  {{ _self.th(column) }}
-		  {% endfor %}
-		  {{ _self.th("Editar") }}
-		  {{ _self.th("Borrar") }}	  
+	<thead>
+		<tr>
+			{% for column in columns %}
+				{{ _self.th(column) }}
+			{% endfor %}
+			{{ _self.th("Editar") }}
+			{{ _self.th("Borrar") }}	  
+		</tr>
+	</thead>
+{% endmacro %}
+
+{% macro trow(row, tablename, postid) %}
+	<tr>
+		{% for col in row %}
+			<td>{{ col  }}</td>
+		{% endfor %}
+		<td><a href="{{  "/table/#{tablename}/#{postid}/edit" }}">Editar</a></td>
+		<td><a href="#"
+			   hx-confirm="Are you sure you want to delete this row?"
+			   hx-swap="outerHTML swap:1s"
+			   hx-target="closest tr"
+			   hx-delete="{{  "/table/#{tablename}/#{postid}" }}">Borrar</a></td>
 	</tr>
-  </thead>
 {% endmacro %}

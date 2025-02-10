@@ -14,6 +14,11 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 $twig = Templates::getInstance();
 
-var_dump(DB::getInstance()->get_filas($tablename));
+if ($method == 'DELETE') {
+    var_dump($tablename);
+    var_dump($row);
+} else {
+    echo $twig->load('layouts/table.html.twig', [ 'table' => DB::getInstance()->get_filas($tablename), 'tablename' => $tablename ]);
+}
 
-echo $twig->load('layouts/table.html.twig', [ 'table' => DB::getInstance()->get_filas($tablename), 'tablename' => $tablename ]);
+
