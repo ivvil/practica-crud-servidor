@@ -11,6 +11,7 @@ CREATE TABLE  `usuarios` (
                            `nombre` VARCHAR( 100 ) NOT NULL ,
                            `password` VARCHAR( 250 ) NULL
 ) ENGINE = INNODB;
+
 CREATE TABLE  `producto` (
                              `cod` INT NOT NULL AUTO_INCREMENT ,
                              `clave` VARCHAR( 12 ) NOT NULL ,
@@ -40,18 +41,18 @@ CREATE TABLE   `stock` (
 ALTER TABLE `producto`
     ADD CONSTRAINT `producto_ibfk_1`
         FOREIGN KEY (`familia`) REFERENCES `familia` (`cod`)
-            ON UPDATE CASCADE;
+            ON UPDATE CASCADE
+            ON DELETE CASCADE;
 
 ALTER TABLE `stock`
     ADD CONSTRAINT `stock_ibfk_2`
         FOREIGN KEY (`tienda`) REFERENCES `tienda` (`cod`)
-            ON UPDATE CASCADE,
-ADD CONSTRAINT `stock_ibfk_1`
-FOREIGN KEY (`producto`) REFERENCES `producto` (`cod`)
-ON UPDATE CASCADE;
-
-
-
+            ON UPDATE CASCADE
+            ON DELETE CASCADE,
+    ADD CONSTRAINT `stock_ibfk_1`
+        FOREIGN KEY (`producto`) REFERENCES `producto` (`cod`)
+            ON UPDATE CASCADE
+            ON DELETE CASCADE;
 
 INSERT INTO `tienda` (`cod`, `nombre`, `tlf`) VALUES
                                                   (1, 'CENTRAL', '600100100'),

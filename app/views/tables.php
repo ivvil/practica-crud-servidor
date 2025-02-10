@@ -15,8 +15,6 @@ $method = $_SERVER["REQUEST_METHOD"];
 $tables = DB::getInstance()->get_tablas();
 $twig = Templates::getInstance();
 
-
-
 echo $twig->load("components/tables.html.twig", [ 'tables' => $tables ]);
 
 

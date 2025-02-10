@@ -69,8 +69,8 @@ class DB
     // Retorna un array con las filas de una tabla
     public function get_filas(string $tabla): array
     {
-        $res = $this->exec_stmt("SELECT * FROM `$tabla`", "", []);
-        
+        $res = $this->exec_stmt("SELECT * FROM " . $this->con->real_escape_string($tabla), "", []);
+
         if (!$res) {
             throw new DBError('Prepare failed: ' . $this->con->error);
         }
@@ -80,11 +80,22 @@ class DB
 
     //Borra una fila de una tabla dada su código
     //Retorna un mensaje diciendo si lo ha podido borrar o no
-    public function borrar_fila(string $table, int $cod): string
+    public function borrar_fila(string $table, mixed $cod): bool
     {
-        if (!$this->con) {
-            return "Error en la conexión";
+
+        $tipo_cod = match (gettype($cod)){
+            "string" => "s",
+            "integer" => "d"
+        };
+        $res = $this->exec_stmt("DELETE FROM ".$this->con->real_escape_string($table)." WHERE cod = ?", $tipo_cod, [$cod]);
+        if (!$res[0]) {
+            throw new DBError('Delete failed: ' . $this->con->error);
         }
+        if (!$res[0]){
+            return false;
+        }
+
+        return true;
     }
 
     public function close()
@@ -94,13 +105,18 @@ class DB
 
     // Añade una fila cuyos valores se pasan en un array.
     //Tengo el nombre de la tabla y el array ["nombre_Campo"=>"valor"]
-    public function add_fila(string $tabla, array $campos)
-    {
+    public function add_fila(string $tabla, array $campos):bool
+    {        
+        foreach ($campos as $campo => $nombre){
 
-
-        if (!$this->con) {
+        }
+        $res = $this->exec_stmt("INSERT INTO ? VALUES cod = ?", 'ss', [$table, ...$campos]);
+        
+        if (!$res[0]){
             return false;
         }
+
+        return true;
     }
 
     //Registra un usuario en la tabla usuarios y me pasan el nombre y el pass

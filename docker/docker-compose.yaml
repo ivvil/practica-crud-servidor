@@ -1,6 +1,6 @@
 services:
   web:
-    build : .
+    build: .
     ports:
       - 8800:80
     volumes:
@@ -20,5 +20,10 @@ services:
     ports:
       - 33306:3306
     container_name: mysql
-
-
+  phpmyadmin:
+    image: phpmyadmin
+    environment:
+      - PMA_HOST=mysql
+      - PMA_ARBITRARY=1
+    ports:
+      - 8100:80

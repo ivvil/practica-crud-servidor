@@ -103,8 +103,6 @@ if (isset($_SESSION["user"]) && isset($_SESSION["pass"])) {
     
 }
 
-var_dump($error);
-
 $twig = Templates::getInstance();
 
 echo $twig->load("components/login.html.twig", [
