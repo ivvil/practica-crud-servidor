@@ -1,0 +1,22 @@
+{# -*- engine:django -*- #}
+
+{% extends "layouts/layout.html.twig" %}
+
+{#% import "macros/table.html.twig" as table %#}
+
+{% block content %}
+	<main>
+		<table>
+			{# {{ thead(table.thead) }} #} 
+			<tbody>
+				{% for row in table.rows %}
+					<tr>
+						{% for col in row.cols %}
+							<td>{{ col }}</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</main>
+{% endblock %}

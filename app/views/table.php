@@ -12,6 +12,8 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["pass"])){
 $req = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
 
-// $tablename = substr($req, strpos($req, "/table"));
+$twig = Templates::getInstance();
 
-var_dump($tablename);
+// var_dump(DB::getInstance()->get_filas($tablename));
+
+echo $twig->load('layouts/table.html.twig', [ DB::getInstance()->get_filas($tablename) ]);

@@ -56,17 +56,12 @@ class DB
 
     public function get_tablas(): array
     {
-        $tablas = [];
-
         $res = $this->exec_stmt('SHOW TABLES', "", []);
         if (!$res) {
             throw new DBError('Prepare failed: ' . $this->con->error);
         }
 
-        foreach ($res as $tabla)
-        {
-            $tablas = array_merge($tablas, array_values($tabla));
-        }
+        $tablas = $this->arrayFlatten($res);
 
         return $tablas;
     }
@@ -74,14 +69,13 @@ class DB
     // Retorna un array con las filas de una tabla
     public function get_filas(string $tabla): array
     {
-        $filas = [];
-        $res = $this->exec_stmt("SELECT * FROM ?", "s", [$tabla]);
-        // TETAS
+        $res = $this->exec_stmt("SELECT * FROM `$tabla`", "", []);
+        
         if (!$res) {
-            return [];
+            throw new DBError('Prepare failed: ' . $this->con->error);
         }
 
-        return $filas;
+        return $res;
     }
 
     //Borra una fila de una tabla dada su código
@@ -174,5 +168,17 @@ class DB
 
         // Si no hay resultado (ejemplo: INSERT, UPDATE, DELETE), devolver éxito
         return [true];
+    }
+
+    private function arrayFlatten(array $array): array
+    {
+        $out = [];
+        
+        foreach ($array as $datum)
+        {
+            $out = array_merge($out, array_values($datum));
+        }
+
+        return $out;
     }
 }
