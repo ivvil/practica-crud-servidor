@@ -20,31 +20,42 @@ if (str_contains($req, "register")) {
 
 function login(string $user, string $pass, DB $db): bool
 {
+
+    $valid_login = true;
     if (!$db->existe_usuario($user)) {
         $GLOBALS['error']['login'] = "El usuario no son correctos";
-        return false;
+        $valid_login = false;
     }
 
     if (!$db->comprobar_contrasegna($user, $pass)){
         $GLOBALS['error']['login'] = "El usuario no son correctos";
+        $valid_login = false;
+    }
+
+    if (!$valid_login){
         return false;
     }
 
     $_SESSION['user'] = serialize($user);
     $_SESSION['pass'] = serialize($pass);
-    header("Location: /tables");
-    die();
+    
+    return true;
 }
 
 function register(string $user, string $pass, string $re_pass, DB $db): bool
 {
+    $valid_register = true;
     if ($pass !== $re_pass) {
         $GLOBALS['error']['passwd'] = "Las contraseñas no coinciden";
-        return false;
+         $valid_register = false;
     }
 
     if ($db->existe_usuario($user)) {
         $GLOBALS['error']['user'] = "El usuario ya existe";
+         $valid_register = false;
+    }
+
+    if (!$valid_register){
         return false;
     }
 
@@ -91,6 +102,8 @@ if (isset($_SESSION["user"]) && isset($_SESSION["pass"])) {
         die();
     
 }
+
+var_dump($error);
 
 $twig = Templates::getInstance();
 
