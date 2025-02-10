@@ -14,6 +14,6 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 $twig = Templates::getInstance();
 
-// var_dump(DB::getInstance()->get_filas($tablename));
+var_dump(DB::getInstance()->get_filas($tablename));
 
-echo $twig->load('layouts/table.html.twig', [ DB::getInstance()->get_filas($tablename) ]);
+echo $twig->load('layouts/table.html.twig', [ 'table' => DB::getInstance()->get_filas($tablename), 'tablename' => $tablename ]);

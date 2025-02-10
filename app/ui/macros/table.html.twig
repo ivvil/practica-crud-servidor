@@ -9,10 +9,12 @@
 
 {% macro thead(columns) %}
   <thead>
-	<tr>
-	  {% for column in columns %}
-		{{ th(column.name) }}
-	  {% endfor %}
+	  <tr>
+		  {% for column in columns %}
+			  {{ _self.th(column) }}
+		  {% endfor %}
+		  {{ _self.th("Editar") }}
+		  {{ _self.th("Borrar") }}	  
 	</tr>
   </thead>
 {% endmacro %}

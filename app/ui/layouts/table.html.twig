@@ -2,18 +2,20 @@
 
 {% extends "layouts/layout.html.twig" %}
 
-{#% import "macros/table.html.twig" as table %#}
+{% import "macros/table.html.twig" as table %}
 
 {% block content %}
 	<main>
 		<table>
-			{# {{ thead(table.thead) }} #} 
+			{{ table.thead(table[0]|keys) }}  
 			<tbody>
-				{% for row in table.rows %}
+				{% for row in table %}
 					<tr>
-						{% for col in row.cols %}
+						{% for col in row %}
 							<td>{{ col }}</td>
 						{% endfor %}
+						<td><a href="{{  "/table/#{tablename}/#{row|first}/edit" }}">Editar</a></td>
+						<td><a href="{{  "/table/#{tablename}/#{row|first}/delete" }}">Borrar</a></td>
 					</tr>
 				{% endfor %}
 			</tbody>
