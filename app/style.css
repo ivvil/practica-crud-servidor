@@ -1,77 +1,167 @@
+/* Root Variables */
 :root {
-  --bg-color: rgb(255, 248, 213);
-  --accent-color: #808080;
+  --primary-color: #4A90E2;
+  --secondary-color: #357ABD;
+  --background-color: #1e1e1e;
+  --text-color: #ffffff;
+  --input-bg: rgba(255, 255, 255, 0.1);
+  --border-radius: 12px;
+  --error-color: #ff4d4d;
 }
 
-*{
-  margin:0;
-  padding: 0;
-}
-header {
-  position: fixed;
-  top: 0;
-  width: 100vw;
-  height: 5vh;
-  background-color: var(--accent-color);
-}
-
-.centered {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  background-color: var(--bg-color);
-  flex-direction: column;
-  h2 {
-	margin-bottom: 0;
-  }
-}
-
-main {
-  padding: 5%;
-}
-
-strong {
-  font-size: 2em;
-}
-
-html, body {
+/* General Reset */
+* {
   margin: 0;
   padding: 0;
-  height: 100vh;
-  min-height: 100vh;
-  font-family: sans-serif; /* TODO Look into different fonts */
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
 }
-body{
-  display:flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh
-}
-.tetas_sabrosas{
-  min-width: 20vw;
-  min-height: 20vh;
-  padding: 2%;
-  background-color: var(--accent-color);
+
+/* Body Styling */
+body {
+  background: linear-gradient(135deg, #181818, #222222);
+  color: var(--text-color);
   display: flex;
-  justify-content:center;
-  align-items: center;
   flex-direction: column;
-
-  button {
-	width: 100%;
-  }
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
 
-button {
+/* Header */
+header {
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+  font-size: 24px;
+}
+
+header form {
+  margin-top: 10px;
+}
+
+header input[type="submit"] {
+  background: var(--error-color);
+  color: white;
   border: none;
-  padding: 2%;
-  text-align: left;
+  padding: 8px 15px;
+  font-size: 14px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: 0.3s;
 }
 
+header input[type="submit"]:hover {
+  background: darkred;
+}
+
+/* Main Content */
+main {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+  text-align: center;
+  margin-bottom: 30vh;
+}
+
+/* Card-Like Container */
+.tetas_sabrosas {
+  background: var(--input-bg);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Button Styling */
+button {
+  width: 100%;
+  background: none;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  font-size: 18px;
+  font-weight: bold;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--primary-color);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* Form Container */
 .tab-content {
-  background-color: gray;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
 }
 
+/* Form Elements */
+form {
+  display: flex;
+  flex-direction: column;
+}
 
+label {
+  text-align: left;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: var(--border-radius);
+  border: none;
+  outline: none;
+  background: var(--input-bg);
+  color: var(--text-color);
+  transition: all 0.3s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border: 1px solid var(--primary-color);
+}
+
+/* Submit Button */
+input[type="submit"] {
+  background: var(--primary-color);
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.3s ease-in-out;
+}
+
+input[type="submit"]:hover {
+  background: var(--secondary-color);
+}
+
+/* Error Messages */
+.error {
+  color: var(--error-color);
+  font-size: 12px;
+  margin-top: 5px;
+}
