@@ -149,7 +149,7 @@ class DB
         $field_names = [];
         $field_values = [];
         $table_schema = $this->get_schema($tabla);
-
+        
         foreach ($table_schema as $column) {
             $field_names[] = $column['COLUMN_NAME'];
             $field_types .= match ($column['DATA_TYPE']) {
