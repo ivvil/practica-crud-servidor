@@ -3,16 +3,22 @@
 {% extends "layouts/layout.html.twig" %}
 
 {% block content %}
-	<h2>Añadiendo: {{tablename}}</h2>
-	<hr />
-
 	<main>
-		<form method="post">
+		<h2>Añadiendo: {{tablename}}</h2>
+		<hr />
+		<form method="POST" action="/table/{{tablename}}/add">
 		{% for field in table %}
-			<label for="{field.name}">{field.name}</label>
-			<input type="{field.type}" name="{field}">
+			<label for="{{field.name}}">{{field.name}}</label>
+			<input type="{{field.type}}" name="{{field.name}}" id="{{field.name}}" {{field.requred}}>
 		{% endfor %}
 		<input type="submit">
 		</form>
 	</main>
 {% endblock %}
+
+
+
+{# 
+	Ya va
+	ahora que se envin los datos habra que 
+	#}

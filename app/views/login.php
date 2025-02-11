@@ -41,7 +41,6 @@ function login(string $user, string $pass, DB $db): bool
     
     return true;
 }
-
 function register(string $user, string $pass, string $re_pass, DB $db): bool
 {
     $valid_register = true;

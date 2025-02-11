@@ -8,8 +8,8 @@ use mysqli_stmt;
 
 class DB
 {
-    private static $instance = null;
-    public $con;
+    private static ?DB $instance = null;
+    public mysqli $con;
 
     private function __construct()
     {
@@ -48,6 +48,9 @@ class DB
      * Este método tendría que investigar en el diccionario de datos
      * Devolverá qué campos de esta tabla son claves foráneas
      * */
+    /**
+     * @throws DBError
+     */
     public function get_foraneas(string $tabla): array // Ni idea si esto va a funcionar
     {
         $res = $this->exec_stmt("
@@ -73,7 +76,8 @@ class DB
         $res = $this->exec_stmt("
         SELECT
             COLUMN_NAME,
-            DATA_TYPE
+            DATA_TYPE,
+            EXTRA
         FROM
             INFORMATION_SCHEMA.COLUMNS
         WHERE
@@ -134,13 +138,36 @@ class DB
         $this->con->close();
     }
 
-    // Añade una fila cuyos valores se pasan en un array.
-    //Tengo el nombre de la tabla y el array ["nombre_Campo"=>"valor"]
+    /* 
+     * Añade una fila cuyos valores se pasan en un array.
+     * Tengo el nombre de la tabla y el array ["nombre_Campo"=>"valor"]
+    */
     public function add_fila(string $tabla, array $campos): bool
     {
-        foreach ($campos as $campo => $nombre) {
+
+        $field_types = "";
+        $field_names = [];
+        $field_values = [];
+        $table_schema = $this->get_schema($tabla);
+
+        foreach ($table_schema as $column) {
+            $field_names[] = $column['COLUMN_NAME'];
+            $field_types .= match ($column['DATA_TYPE']) {
+            'int', 'tinyint', 'smallint', 'mediumint', 'bigint' => 'i',
+            'float', 'double', 'decimal' => 'd',
+            default => 's',
+            };
+            $field_values[] = $campos[$column['COLUMN_NAME']] ?? null;
         }
-        $res = $this->exec_stmt("INSERT INTO ? VALUES cod = ?", 'ss', [$table, ...$campos]);
+
+        $placeholders = implode(',', array_fill(0, count($field_names), '?'));
+        $field_names_str = implode(',', $field_names);
+
+        $res = $this->exec_stmt(
+            "INSERT INTO " . $this->con->real_escape_string($tabla) . " (".$this->con->real_escape_string($field_names_str).") VALUES ($placeholders)",
+            $field_types,
+            $field_values
+        );
 
         if (!$res[0]) {
             return false;
@@ -185,7 +212,7 @@ class DB
         return false;
     }
 
-    private function exec_stmt(string $sql, string $param_types, array $params): array
+    public function exec_stmt(string $sql, string $param_types, array $params): array
     {
         if (strlen($param_types) !== count($params)) {
             throw new DBError("Número de parámetros incorrecto.");

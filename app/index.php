@@ -1,5 +1,7 @@
 <?php
 
+// el tablename no me lo pilla en add.php
+
 namespace App\Crud;
 
 use function APP\Crud\tableAdd;
@@ -31,8 +33,12 @@ $router->addRoutes([
     ],
     [
         'method' => '',
-        'path' => '/table/{tablename}/new',
+        'path' => [
+            '/table/{tablename}/new',
+            '/table/{tablename}/add',
+        ],
         'handler' => function ($params) {
+            $tablename = $params["tablename"];
             require __DIR__ . '/views/add.php';
         }
     ],
