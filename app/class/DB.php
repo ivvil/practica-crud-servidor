@@ -63,7 +63,23 @@ class DB
             REFERENCED_TABLE_SCHEMA = ? AND
             TABLE_NAME = ? AND
             REFERENCED_TABLE_NAME IS NOT NULL;
-       ", 'ss', ["tienda", $tabla]);
+       ", 'ss', ['tienda', $tabla]);
+
+        return $res;
+    }
+
+    public function get_schema(string $tabla): array
+    {
+        $res = $this->exec_stmt("
+        SELECT
+            COLUMN_NAME,
+            DATA_TYPE
+        FROM
+            INFORMATION_SCHEMA.COLUMNS
+        WHERE
+            TABLE_SCHEMA = ? AND
+            TABLE_NAME = ?;     
+        ", 'ss', ['tienda', $tabla]);
 
         return $res;
     }
@@ -98,15 +114,15 @@ class DB
     public function borrar_fila(string $table, mixed $cod): bool
     {
 
-        $tipo_cod = match (gettype($cod)){
+        $tipo_cod = match (gettype($cod)) {
             "string" => "s",
             "integer" => "d"
         };
-        $res = $this->exec_stmt("DELETE FROM ".$this->con->real_escape_string($table)." WHERE cod = ?", $tipo_cod, [$cod]);
+        $res = $this->exec_stmt("DELETE FROM " . $this->con->real_escape_string($table) . " WHERE cod = ?", $tipo_cod, [$cod]);
         if (!$res[0]) {
             throw new DBError('Delete failed: ' . $this->con->error);
         }
-        if (!$res[0]){
+        if (!$res[0]) {
             return false;
         }
 
@@ -120,14 +136,13 @@ class DB
 
     // Añade una fila cuyos valores se pasan en un array.
     //Tengo el nombre de la tabla y el array ["nombre_Campo"=>"valor"]
-    public function add_fila(string $tabla, array $campos):bool
-    {        
-        foreach ($campos as $campo => $nombre){
-
+    public function add_fila(string $tabla, array $campos): bool
+    {
+        foreach ($campos as $campo => $nombre) {
         }
         $res = $this->exec_stmt("INSERT INTO ? VALUES cod = ?", 'ss', [$table, ...$campos]);
-        
-        if (!$res[0]){
+
+        if (!$res[0]) {
             return false;
         }
 
@@ -204,9 +219,8 @@ class DB
     private function arrayFlatten(array $array): array
     {
         $out = [];
-        
-        foreach ($array as $datum)
-        {
+
+        foreach ($array as $datum) {
             $out = array_merge($out, array_values($datum));
         }
 

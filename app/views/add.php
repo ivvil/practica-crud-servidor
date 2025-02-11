@@ -1,9 +1,10 @@
 <?php
 
-namespace APP\Crud;
+namespace App\Crud;
 
-function tableAdd($tablename) {
-    $db = DB::getInstance();
+$db = DB::getInstance();
 
-   
-}
+var_dump($params);
+
+var_dump($db->get_foraneas($params['tablename']));
+var_dump($db->get_schema($params['tablename']));

@@ -2,6 +2,8 @@
 
 namespace App\Crud;
 
+use function APP\Crud\tableAdd;
+
 require_once "vendor/autoload.php";
 
 $tmplt = Templates::getInstance(__DIR__ . '/ui');
@@ -29,6 +31,13 @@ $router->addRoutes([
     ],
     [
         'method' => '',
+        'path' => '/table/{tablename}/new',
+        'handler' => function ($params) {
+            require __DIR__ . '/views/add.php';
+        }
+    ],
+    [
+        'method' => '',
         'path' => [
             '/table/{tablename}',
             '/table/{tablename}/{row}'
@@ -42,4 +51,3 @@ $router->addRoutes([
 ]);
 
 $router->resolve();
-
